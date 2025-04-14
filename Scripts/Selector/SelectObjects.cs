@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using System.Helpers;
 
 using UnityEngine;
-
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SelectObjects : MonoBehaviour
 {
@@ -10,15 +11,26 @@ public class SelectObjects : MonoBehaviour
 
 	private HexagonSelectHelper _terrain;
 
-	public HexagonSelectHelper terrainunitSelected 
+	public static bool ActiveUnitSelect;
+
+	public UnitSelectHelper SelectedObject;
+
+	[SerializeField] private GraphicRaycaster m_Raycaster;
+	[SerializeField] private PointerEventData m_PointerEventData;
+	[SerializeField] private EventSystem m_EventSystem;
+
+	[SerializeField]
+	private GameObject _viewCity;
+
+	public HexagonSelectHelper terrainunitSelected
 	{
 		get => _terrain;
 		set
 		{
-			
-			if (_terrain == value) return;
 
-			if (_terrain != null)
+			if(_terrain == value) return;
+
+			if(_terrain != null)
 			{
 				_terrain.GetComponent<Renderer>().material.color = Color.white;
 			}
@@ -28,8 +40,8 @@ public class SelectObjects : MonoBehaviour
 		}
 	}
 
-	public static List<UnitSelectHelper> unit; // массив всех юнитов, которых мы можем выделить
-	public static List<UnitSelectHelper> unitSelected; // массив выделенных юнитов
+	public static List<UnitSelectHelper> unit; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	public static List<UnitSelectHelper> unitSelected; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 	public Renderer rend;
 	public GUISkin skin;
@@ -43,44 +55,67 @@ public class SelectObjects : MonoBehaviour
 
 	void Awake()
 	{
+		ActiveUnitSelect = false;
+		SelectedObject = null;
 		Initializer.Initialize(ref unit);
 		Initializer.Initialize(ref unitSelected);
 		Initializer.Initialize(ref terrainunit);
 	}
 
-	// проверка, добавлен объект или нет
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ
 	bool CheckUnit(GameObject unit)
 	{
 		bool result = false;
-		foreach (var u in unitSelected)
+		foreach(var u in unitSelected)
 		{
-			if (u.gameObject == unit) result = true;
+			if(u.gameObject == unit) result = true;
 		}
 		return result;
 	}
 
 	void Select()
 	{
-		if (unitSelected.Count > 0)
+		if(unitSelected.Count > 0)
 		{
-			for (int j = 0; j < unitSelected.Count; j++)
+			for(int j = 0; j < unitSelected.Count; j++)
 			{
-				// делаем что-либо с выделенными объектами
+				// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				unitSelected[j].GetComponent<Renderer>().material.color = new Color(0.7f, 0.4f, 0.4f, 0.9f);
+				ActiveUnitSelect = true;
+				SelectedObject = unitSelected[j];
 			}
 		}
 	}
 
 	void Deselect()
 	{
-		if (unitSelected.Count > 0)
+		if(unitSelected.Count > 0)
 		{
-			for (int j = 0; j < unitSelected.Count; j++)
+			for(int j = 0; j < unitSelected.Count; j++)
 			{
-				// отменяем то, что делали с объектоми
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				unitSelected[j].GetComponent<Renderer>().material.color = Color.white;
+				ActiveUnitSelect = false;
+				SelectedObject = null;
 			}
 		}
+	}
+
+	private void Start()
+	{
+		m_EventSystem = FindObjectOfType<EventSystem>();
+		m_Raycaster = FindObjectOfType<GraphicRaycaster>();
+	}
+
+	private bool CheckUi()
+	{
+		m_PointerEventData = new PointerEventData(m_EventSystem);
+		m_PointerEventData.position = Input.mousePosition;
+
+		List<RaycastResult> results = new List<RaycastResult>();
+		m_Raycaster.Raycast(m_PointerEventData, results);
+
+		return results.Count > 0;
 	}
 
 	void OnGUI()
@@ -88,24 +123,29 @@ public class SelectObjects : MonoBehaviour
 		GUI.skin = skin;
 		GUI.depth = 99;
 
-		if (Input.GetMouseButtonDown(0))
+		if(CheckUi())
+		{
+			return;
+		}
+
+		if(Input.GetMouseButtonDown(0))
 		{
 			Deselect();
 			startPos = Input.mousePosition;
 			draw = true;
 		}
 
-		if (Input.GetMouseButtonUp(0))
+		if(Input.GetMouseButtonUp(0))
 		{
 			draw = false;
 			Select();
 		}
 
-		if (draw)
+		if(draw)
 		{
 			unitSelected.Clear();
 			endPos = Input.mousePosition;
-			if (startPos == endPos) return;
+			if(startPos == endPos) return;
 
 			rect = new Rect(Mathf.Min(endPos.x, startPos.x),
 							Screen.height - Mathf.Max(endPos.y, startPos.y),
@@ -115,18 +155,18 @@ public class SelectObjects : MonoBehaviour
 
 			GUI.Box(rect, "");
 
-			for (int j = 0; j < unit.Count; j++)
+			for(int j = 0; j < unit.Count; j++)
 			{
-				// трансформируем позицию объекта из мирового пространства, в пространство экрана
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 				Vector2 tmp = new Vector2(Camera.main.WorldToScreenPoint(unit[j].transform.position).x, Screen.height - Camera.main.WorldToScreenPoint(unit[j].transform.position).y);
 
-				if (rect.Contains(tmp)) // проверка, находится-ли текущий объект в рамке
+				if(rect.Contains(tmp)) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
 				{
-					if (unitSelected.Count == 0)
+					if(unitSelected.Count == 0)
 					{
 						unitSelected.Add(unit[j]);
 					}
-					else if (!CheckUnit(unit[j].gameObject))
+					else if(!CheckUnit(unit[j].gameObject))
 					{
 						unitSelected.Add(unit[j]);
 					}
@@ -164,44 +204,54 @@ public class SelectObjects : MonoBehaviour
 	{
 		var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-		if (Input.GetMouseButtonDown(0))
+		if(CheckUi())
+		{
+			return;
+		}
+
+		if(Input.GetMouseButtonDown(0))
 		{
 			RaycastHit2D hit = Physics2D.Raycast(new Vector2(pos.x, pos.y), Vector2.zero);
 
-			if (hit.collider != null && hit.collider.tag == "Hexagon")
+			if(hit.collider != null && hit.collider.tag == "Hexagon")
 			{
-				Debug.Log(hit.collider.transform.position);
 
 				var wq = hit.transform.GetComponent<HexagonSelectHelper>();
 
-				if (wq != null)
+				if(wq != null)
 				{
 					terrainunitSelected = wq;
+
+					//_viewCity?.SetActive(true);
 				}
+			}
+			else
+			{
+				//_viewCity?.SetActive(false);
 			}
 		}
 
-		if (Input.GetMouseButtonDown(1))
+		if(Input.GetMouseButtonDown(1))
 		{
 			RaycastHit2D hit = Physics2D.Raycast(new Vector2(pos.x, pos.y), Vector2.zero);
 
-			if (hit.collider != null && hit.collider.tag == "Hexagon")
+			if(hit.collider != null && hit.collider.tag == "Hexagon")
 			{
 				Debug.Log(hit.collider.transform.position);
-				foreach (var unit in unitSelected)
+				foreach(var unit in unitSelected)
 				{
 					unit.TargetPosition = hit.collider.transform.position;
 				}
 			}
-			else if (hit.collider != null && hit.collider.tag == "Player")
+			else if(hit.collider != null && hit.collider.tag == "Player")
 			{
 				var target = hit.collider.gameObject.GetComponent<Character>();
 
-				if (target != null)
+				if(target != null)
 				{
-					foreach (var unit in unitSelected)
+					foreach(var unit in unitSelected)
 					{
-						if (target.gameObject != unit.gameObject)
+						if(target.gameObject != unit.gameObject)
 						{
 							Debug.Log($"unit {unit.name} atack to {target.name}");
 

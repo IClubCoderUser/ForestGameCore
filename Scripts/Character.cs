@@ -29,6 +29,9 @@ public class Character : MonoBehaviour
 	public SpriteRenderer defbar;
 	public FlagObject FlagsObject;
 
+	public string objectname;
+	public string description;
+
 	public FlagsEnum Flags;
 
 	// Start is called before the first frame update
