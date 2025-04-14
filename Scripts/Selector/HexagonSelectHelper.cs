@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(HexHelper))]
 public class HexagonSelectHelper : MonoBehaviour
 {
     void Start()
@@ -12,15 +13,6 @@ public class HexagonSelectHelper : MonoBehaviour
 
 
 }
-
-
-
-
-
-
-
-
-
 
 
 //public Renderer hexrend;
