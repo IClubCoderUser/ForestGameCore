@@ -27,16 +27,17 @@ public class SelectObjects : MonoBehaviour
 		get => _terrain;
 		set
 		{
-
-			if(_terrain == value) return;
-
 			if(_terrain != null)
 			{
 				_terrain.GetComponent<Renderer>().material.color = Color.white;
 			}
 
 			_terrain = value;
-			_terrain.GetComponent<Renderer>().material.color = new Color(0.7f, 0.4f, 0.4f, 0.9f);
+
+			if(_terrain != null)
+			{
+				_terrain.GetComponent<Renderer>().material.color = new Color(0.7f, 0.4f, 0.4f, 0.9f);
+			}
 		}
 	}
 
@@ -51,12 +52,15 @@ public class SelectObjects : MonoBehaviour
 	private Vector2 endPos;
 	public GameObject _targetobject;
 
+	private float _timerGuiTicks;
+
 	public Vector2 _diference;
 
 	void Awake()
 	{
 		ActiveUnitSelect = false;
 		SelectedObject = null;
+
 		Initializer.Initialize(ref unit);
 		Initializer.Initialize(ref unitSelected);
 		Initializer.Initialize(ref terrainunit);
@@ -131,14 +135,26 @@ public class SelectObjects : MonoBehaviour
 		if(Input.GetMouseButtonDown(0))
 		{
 			Deselect();
+			_timerGuiTicks = 0;
 			startPos = Input.mousePosition;
-			draw = true;
+		}
+
+		if(Input.GetMouseButton(0))
+		{
+			if(_timerGuiTicks > 130)
+			{ 
+				draw = true;
+			}
+			_timerGuiTicks += 1;
 		}
 
 		if(Input.GetMouseButtonUp(0))
 		{
-			draw = false;
-			Select();
+			if(_timerGuiTicks > 130)
+			{
+				draw = false;
+				Select();
+			}
 		}
 
 		if(draw)
@@ -157,10 +173,9 @@ public class SelectObjects : MonoBehaviour
 
 			for(int j = 0; j < unit.Count; j++)
 			{
-				// �������������� ������� ������� �� �������� ������������, � ������������ ������
 				Vector2 tmp = new Vector2(Camera.main.WorldToScreenPoint(unit[j].transform.position).x, Screen.height - Camera.main.WorldToScreenPoint(unit[j].transform.position).y);
 
-				if(rect.Contains(tmp)) // ��������, ���������-�� ������� ������ � �����
+				if(rect.Contains(tmp))
 				{
 					if(unitSelected.Count == 0)
 					{
@@ -203,6 +218,11 @@ public class SelectObjects : MonoBehaviour
 	public void Update()
 	{
 		var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+		if(draw)
+		{
+			terrainunitSelected = null;
+		}
 
 		if(CheckUi())
 		{
