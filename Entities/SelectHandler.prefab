@@ -43,6 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df216210789c5c142968b5b9a19ad618, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SelectedObject: {fileID: 0}
+  m_Raycaster: {fileID: 0}
+  m_EventSystem: {fileID: 0}
+  _viewCity: {fileID: 0}
   rend: {fileID: 0}
   skin: {fileID: 0}
   _targetobject: {fileID: 0}

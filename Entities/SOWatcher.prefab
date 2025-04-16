@@ -13,9 +13,9 @@ GameObject:
   m_Layer: 0
   m_Name: SOWatcher
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: dcb2ee37925b97e438ae244996d81a55, type: 3}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2987783944038988323
 Transform:
