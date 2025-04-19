@@ -11,7 +11,7 @@ public class ResourceGiveController : IController
 	{
 		if(EconomicRepository == null)
 		{
-			EconomicRepository = GameObject.FindObjectOfType<EconomicRepository>();
+			EconomicRepository = FindObjectOfType<EconomicRepository>();
 		}
 		
 		return true;
@@ -19,7 +19,7 @@ public class ResourceGiveController : IController
 
 	public override void StateUpdate()
 	{
-		var builds = UnityEngine.GameObject.FindObjectsOfType<ItemResources>();
+		var builds = FindObjectsOfType<ItemResources>();
 
 		foreach(var build in builds) 
 		{
