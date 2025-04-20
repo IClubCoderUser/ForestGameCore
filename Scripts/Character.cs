@@ -23,6 +23,8 @@ public class Character : MonoBehaviour
 	public float hpCurrernt;
 	public float defCurrent;
 
+	public int Country;
+
 	public int Speed = 2;
 
 	public SpriteRenderer hpbar;
