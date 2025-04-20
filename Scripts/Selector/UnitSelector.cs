@@ -33,7 +33,7 @@ public class UnitSelector : MonoBehaviour
         if (Input.GetMouseButton(2))
         {
             _targetobject = null;
-            rend.material.color = Color.white;
+            //rend.material.color = Color.white;
         }
     }
 

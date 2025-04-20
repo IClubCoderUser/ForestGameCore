@@ -36,6 +36,9 @@ public class Character : MonoBehaviour
 
 	public FlagsEnum Flags;
 
+	/// <summary>Тип юнита.</summary>
+	public string unitType; 
+
 	// Start is called before the first frame update
 	void Start()
 	{
