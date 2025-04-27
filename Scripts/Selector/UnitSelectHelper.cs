@@ -9,6 +9,9 @@ public class UnitSelectHelper : MonoBehaviour
 	private bool isMoving;
 	private Vector3 _target;
 	public float speed = 10f;
+	public Color colour;
+
+	public virtual bool IsBuild { get; }
 
 	public int StepInStep = 0;
 

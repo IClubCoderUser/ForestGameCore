@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Xml.Linq;
 using Tools.Framework.Repository;
 using UnityEngine;
 
@@ -41,10 +42,17 @@ public class repositori_units : BaseRepository<UnitSelectHelper>
 public class filtr_units : IEntityFilter<UnitSelectHelper>
 {
 	public int? Country { get; set; }
+
 	public HexHelper Position { get; set; }
 
-	public bool Check(UnitSelectHelper entity)
+    public Vector3? Vector { get; set; }
+
+	public bool? IsBuild { get; set; }
+
+    public bool Check(UnitSelectHelper entity)
 	{
+		if (IsBuild.HasValue && IsBuild != entity.IsBuild) return false;
+
 		if(Country == entity.Character.Country)
 		{
 			return true;
@@ -53,6 +61,13 @@ public class filtr_units : IEntityFilter<UnitSelectHelper>
 		{
 			return true;
 		}
+		if(Vector.HasValue)
+		{
+            float distance = Vector2.Distance(entity.transform.position, Vector.Value);
+			return distance < 1;
+        }
+
+
 		return false;
 	}
 }

@@ -4,43 +4,47 @@ using System.Collections;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using UnityEditor;
+using System.Linq;
 
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    public GameObject soldger;
+  
     public static Vector2 position_soldger;
     public static Vector2 position_terrain;
-    private bool BeUnitInCityOrNotBe;
-    public bool city1;
-    private bool soldger1;
-    private float Distance = Vector2.Distance(position_soldger, position_terrain);
-
-    GameObject[] units = GameObject.FindGameObjectsWithTag("units");
-    float distance = Mathf.Infinity;
+    public byte Allians;
+    public GameObject city2;
+ 
+   
+    Boostraper _units = Object.FindObjectOfType<Boostraper>();
+   
 
 
     private void NextStep()
     {
-
-        foreach (var element in units)
+        var SOLDATI = _units.Repositori_Units.GetByFilter(new filtr_units()
         {
-            float Distance = Vector2.Distance(element.transform.position, position_terrain);
-            if (Distance < distance) distance = Distance;
+            IsBuild = false,
+        });
 
-        }
+        var BUILDS = _units.Repositori_Units.GetByFilter(new filtr_units() 
+        { 
+            IsBuild = true
+        });
 
-
-        if (distance < 1)
+        foreach (var build in BUILDS) 
         {
-            soldger1 = city1;
-        }
+            var distance_of_build_and_unit = SOLDATI.Min(x => Vector2.Distance(x.transform.position, build.transform.position));
+            var soldat = SOLDATI.FirstOrDefault(x => Vector2.Distance(x.transform.position, build.transform.position) == distance_of_build_and_unit);
 
-        else
-        {
-            BeUnitInCityOrNotBe = false;
+            if (soldat != null && distance_of_build_and_unit < 2)
+            {
+                foreach (var item in city2.GetComponentsInChildren<Renderer>())
+                {
+                    item.material.color = soldat.colour;
+                }
+            }
         }
-        
     }
 
 }
