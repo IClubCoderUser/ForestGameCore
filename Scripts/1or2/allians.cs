@@ -25,7 +25,7 @@ public class NewBehaviourScript : MonoBehaviour
 
         foreach (var element in units)
         {
-            float Distance = Vector2.Distance(element, position_terrain);
+            float Distance = Vector2.Distance(element.transform.position, position_terrain);
             if (Distance < distance) distance = Distance;
 
         }
@@ -33,18 +33,14 @@ public class NewBehaviourScript : MonoBehaviour
 
         if (distance < 1)
         {
-            BeUnitInCityOrNotBe = true;
+            soldger1 = city1;
         }
 
         else
         {
             BeUnitInCityOrNotBe = false;
         }
-        if (BeUnitInCityOrNotBe = true)
-        {
-            soldger1 = city1;
-
-        }
+        
     }
 
 }
