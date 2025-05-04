@@ -225,7 +225,11 @@ public class SelectObjects : MonoBehaviour
 
 		if(CheckUi())
 		{
-			return;
+            if (_viewCity != null)
+            {
+                _viewCity?.SetActive(false);
+            }
+            return;
 		}
 
 		if(Input.GetMouseButtonDown(0))
@@ -241,12 +245,18 @@ public class SelectObjects : MonoBehaviour
 				{
 					terrainunitSelected = wq;
 
-					//_viewCity?.SetActive(true);
+					if (_viewCity != null)
+					{ 
+						_viewCity?.SetActive(true);
+					}
 				}
 			}
 			else
 			{
-				//_viewCity?.SetActive(false);
+				if (_viewCity != null)
+				{
+					_viewCity?.SetActive(false);
+				}
 			}
 		}
 

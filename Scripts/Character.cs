@@ -60,17 +60,17 @@ public class Character : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-        var yamlFilePath = "Assets/Data/Resources/UnitDescription/unitinfo.yaml";
-        var yamlContent = File.ReadAllText(yamlFilePath);
+        //var yamlFilePath = "Assets/Data/Resources/UnitDescription/unitinfo.yaml";
+        //var yamlContent = File.ReadAllText(yamlFilePath);
 
-        var desirializer = new DeserializerBuilder().Build();
-        var tanks = desirializer.Deserialize<Dictionary<string, Tank>>(yamlContent);
+        //var desirializer = new DeserializerBuilder().Build();
+        //var tanks = desirializer.Deserialize<Dictionary<string, Tank>>(yamlContent);
 
-        if (tanks.TryGetValue(unitType, out Tank tank))
-        {
-            objectname = tank.Name;
-			description = tank.Decs;
-        }
+   //     if (tanks.TryGetValue(unitType, out Tank tank))
+   //     {
+   //         objectname = tank.Name;
+			//description = tank.Decs;
+   //     }
     }
 
 	[UnityEngine.ContextMenu("damagetest")]
