@@ -1,11 +1,20 @@
 using Assets.UI.Flags;
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Security;
 using System.Security.Cryptography;
 using UnityEngine;
+using YamlDotNet.Serialization;
 
+public class Tank
+{
+    public string Name { get; set; }
+    public string Decs { get; set; }
+    public string Flag { get; set; }
+
+}
 
 public class Character : MonoBehaviour
 {
@@ -55,8 +64,18 @@ public class Character : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+        var yamlFilePath = "Assets/Data/Resources/UnitDescription/unitinfo.yaml";
+        var yamlContent = File.ReadAllText(yamlFilePath);
 
-	}
+        var desirializer = new DeserializerBuilder().Build();
+        var tanks = desirializer.Deserialize<Dictionary<string, Tank>>(yamlContent);
+
+        if (tanks.TryGetValue(unitType, out Tank tank))
+        {
+            objectname = tank.Name;
+			description = tank.Decs;
+        }
+    }
 
 	[UnityEngine.ContextMenu("damagetest")]
 	private void damagetest()

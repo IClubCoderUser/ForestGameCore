@@ -1,28 +1,40 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using YamlDotNet.RepresentationModel;
+using YamlDotNet.Serialization;
+
+public class Tan
+{
+    public string Name { get; set; }
+    public string Decs { get; set; }
+    public string Flag { get; set; }
+
+}
 public class YAMLDescription : MonoBehaviour
 {
     void Start()
     {
-        var type = gameObject.GetComponent<Character>().unitType;
-        var reader = new StreamReader("/Assets/Data/Resources/UnitDescription/unitinfo.yaml");
-        var yaml = new YamlStream();
-        yaml.Load(reader);
+        //var _target = GetComponent<SelectObjects>().SelectedObject.gameObject;
+        var _unittype = GetComponent<SelectObjects>().SelectedObject.gameObject.GetComponent<Character>().unitType; // О боже, что это за нечто....
+        //Deserialize();
 
-        var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
-
-        var name = mapping[new YamlScalarNode($"{type}: name")].ToString();
-        var desc = mapping[new YamlScalarNode($"{type}: desc")].ToString();
-        var flag = mapping[new YamlScalarNode($"{type}: flag")].ToString();
-
-        var fullscreen = bool.Parse(mapping[new YamlScalarNode("fullscreen")].ToString());
-
-        Debug.Log($"Name: {type}");
-
-        // Apply additional settings as needed
-        reader.Close();
     }
+
+    private void Update()
+    {
+        var _unittype = GetComponent<SelectObjects>().SelectedObject.gameObject.GetComponent<Character>().unitType; // О боже, что это за нечто....
+
+        var yamlFilePath = "Assets/Data/Resources/UnitDescription/unitinfo.yaml";
+        var yamlContent = File.ReadAllText(yamlFilePath);
+
+        var desirializer = new DeserializerBuilder().Build();
+        var tanks = desirializer.Deserialize<Dictionary<string, Tank>>(yamlContent);
+
+        if (tanks.TryGetValue(_unittype, out Tank tank))
+        {
+
+        }
+    }
+
 }
