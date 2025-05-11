@@ -19,7 +19,7 @@ public class SelectObjects : MonoBehaviour
 	[SerializeField] private EventSystem m_EventSystem;
 
 	[SerializeField]
-	private GameObject _viewCity;
+	private CityVievModel _viewCity;
 
 	public HexagonSelectHelper terrainunitSelected
 	{
@@ -223,14 +223,7 @@ public class SelectObjects : MonoBehaviour
 			terrainunitSelected = null;
 		}
 
-		if(CheckUi())
-		{
-            if (_viewCity != null)
-            {
-                _viewCity?.SetActive(false);
-            }
-            return;
-		}
+		if(CheckUi()) return;
 
 		if(Input.GetMouseButtonDown(0))
 		{
@@ -246,8 +239,8 @@ public class SelectObjects : MonoBehaviour
 					terrainunitSelected = wq;
 
 					if (_viewCity != null)
-					{ 
-						_viewCity?.SetActive(true);
+					{
+						_viewCity?.SetLocation(wq.transform);
 					}
 				}
 			}
@@ -255,7 +248,7 @@ public class SelectObjects : MonoBehaviour
 			{
 				if (_viewCity != null)
 				{
-					_viewCity?.SetActive(false);
+					_viewCity?.ResetImpl();
 				}
 			}
 		}
