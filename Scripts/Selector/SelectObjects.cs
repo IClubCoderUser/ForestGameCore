@@ -8,7 +8,7 @@ public class SelectObjects : MonoBehaviour
 {
 	public static List<HexagonSelectHelper> terrainunit;
 
-	private HexagonSelectHelper _terrain;
+    public static HexagonSelectHelper _terrain;
 
 	public static bool ActiveUnitSelect;
 

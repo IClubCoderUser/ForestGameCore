@@ -19,6 +19,6 @@ public class createcity : MonoBehaviour
         city.transform.parent = Location;
         city.transform.localPosition = Vector3.zero;
 
-        city.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 10;
+        city.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 100;
     }
 }

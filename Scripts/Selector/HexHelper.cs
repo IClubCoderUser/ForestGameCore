@@ -7,7 +7,7 @@ public class HexHelper : MonoBehaviour
 	private float ScalerX = 1;
 
     [SerializeField]
-	private TypeTerrain type_terrain;
+    public TypeTerrain type_terrain;
 
     [SerializeField]
 	private float ScalerY = 1;
@@ -78,6 +78,8 @@ public class HexHelper : MonoBehaviour
 
 			Gizmos.DrawWireSphere(pos, ScalerX);
 		}
+
+		if (Hexs == null) return;
 
 		foreach(var item in Hexs)
 		{
